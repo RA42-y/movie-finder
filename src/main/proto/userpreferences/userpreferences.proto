@@ -1,0 +1,19 @@
+// The bidirectional streaming call for receiving a stream of movies as input,
+// matching against user preferences and responding with a stream of movies is defined here.
+syntax = "proto3";
+package moviecontroller;
+import "common/common.proto";
+option java_package = "com.proto.moviecontroller";
+option java_multiple_files = true;
+
+message UserPreferencesRequest {
+  string userid = 1;
+  common.Movie movie = 2;
+}
+message UserPreferencesResponse {
+  common.Movie movie = 1;
+}
+service UserPreferencesService {
+  // Bidirectional streaming rpc call to receive a stream of movies shortlisted based on user preferences
+  rpc getShortlistedMovies(stream UserPreferencesRequest) returns (stream UserPreferencesResponse) {};
+}

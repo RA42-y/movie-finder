@@ -1,0 +1,50 @@
+plugins {
+    // Provide convenience executables for trying out the examples.
+    id 'application'
+    id 'com.google.protobuf' version '0.9.4'
+    // Generate IntelliJ IDEA's .idea & .iml project files
+    id 'idea'
+}
+group 'com.ra'
+version '1.0-SNAPSHOT'
+repositories {
+    maven { // The google mirror is less flaky than mavenCentral()
+        url "https://maven-central.storage-download.googleapis.com/maven2/"
+    }
+    mavenCentral()
+    mavenLocal()
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+def grpcVersion = '1.58.0' // CURRENT_GRPC_VERSION
+def protobufVersion = '3.24.0'
+def protocVersion = protobufVersion
+
+dependencies {
+    implementation "io.grpc:grpc-protobuf:${grpcVersion}"
+    implementation "io.grpc:grpc-services:${grpcVersion}"
+    implementation "io.grpc:grpc-stub:${grpcVersion}"
+    compileOnly "org.apache.tomcat:annotations-api:6.0.53"
+
+    implementation "com.google.protobuf:protobuf-java-util:${protobufVersion}"
+
+    runtimeOnly "io.grpc:grpc-netty-shaded:${grpcVersion}"
+
+    testImplementation "io.grpc:grpc-testing:${grpcVersion}"
+    testImplementation "junit:junit:4.13.2"
+    testImplementation "org.mockito:mockito-core:3.4.0"
+}
+
+protobuf {
+    protoc { artifact = "com.google.protobuf:protoc:${protocVersion}" }
+    plugins {
+        grpc { artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}" }
+    }
+    generateProtoTasks {
+        all()*.plugins { grpc {} }
+    }
+}
